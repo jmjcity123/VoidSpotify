@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Void Hub | Premium Installierer</title>
+    <style>
+        :root {
+            --bg-deep: #030304;
+            --surface: rgba(10, 10, 12, 0.95);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(255, 255, 255, 0.22);
+            --text-main: #f4f4f5;
+            --text-muted: #71717a;
+            --accent-silver: #e4e4e7;
+            --silver-glow: rgba(255, 255, 255, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.05) 0%, transparent 60%),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        @keyframes sharpReveal {
+            from {
+                opacity: 0;
+                transform: scale(0.98) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 48px 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 520px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--border);
+            animation: sharpReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        @keyframes stepFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-content.active {
+            display: block;
+            animation: stepFadeIn 0.25s ease-out forwards;
+        }
+
+        .meta-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.03);
+            color: #d4d4d8;
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border-radius: 6px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+
+        .badge:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .owner-tag {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .owner-tag strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            font-weight: 800;
+            letter-spacing: -0.8px;
+            background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 32px;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px 24px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary {
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary:hover {
+            background: #e4e4e7;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary {
+            background: #18181b;
+            color: #ffffff;
+            border-color: var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: #27272a;
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+        }
+
+        .btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .status-info {
+            margin-top: 18px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            letter-spacing: 0.2px;
+        }
+
+        .tutorial-box {
+            margin-top: 28px;
+            background: rgba(18, 18, 22, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: left;
+            transition: border-color 0.2s ease;
+        }
+
+        .tutorial-box:hover {
+            border-color: var(--border-glow);
+        }
+
+        .tutorial-title {
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .tutorial-steps {
+            list-style: none;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tutorial-steps li {
+            line-height: 1.5;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 6px;
+            border-left: 2px solid rgba(255, 255, 255, 0.15);
+            transition: transform 0.2s ease, background-color 0.2s ease, border-left-color 0.2s ease, color 0.2s ease;
+        }
+
+        .tutorial-steps li:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-left-color: #ffffff;
+            color: #ffffff;
+            transform: translateX(4px);
+        }
+
+        .tutorial-steps strong {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- SCHRITT 0 -->
+        <div id="step0" class="step-content active">
+            <div class="meta-header">
+                <div class="badge">Void Hub</div>
+                <div class="owner-tag">Owner = <strong>Whizzy & Mar5tein</strong></div>
+            </div>
+            <h1>Willkommen</h1>
+            <p>Klicke auf Weiter, um das sichere Setup zu starten und die Installation vorzubereiten.</p>
+            <button class="btn btn-primary" onclick="nextStep(1)">
+                Weiter ➔
+            </button>
+        </div>
+
+        <!-- SCHRITT 1 -->
+        <div id="step1" class="step-content">
+            <div class="meta-header">
+                <div class="badge">Sicherheit</div>
+                <div class="owner-tag">Owner = <strong>Whizzy & Mar5tein</strong></div>
+            </div>
+            <h1>Verifizierung</h1>
+            <p>Trete unserem Discord-Server bei, um den Download und die Anleitung sofort freizuschalten.</p>
+            <a href="https://discord.gg/YWq4PSKZNV" target="_blank" class="btn btn-secondary" onclick="unlockDownload()">
+                Discord Beitreten
+            </a>
+            <div class="status-info">Der Download schaltet sich nach dem Klick automatisch frei.</div>
+        </div>
+
+        <!-- SCHRITT 2 -->
+        <div id="step2" class="step-content">
+            <div class="meta-header">
+                <div class="badge" style="border-color: rgba(255, 255, 255, 0.3); color: #ffffff;">Verifiziert</div>
+                <div class="owner-tag">Owner = <strong>Whizzy & Mar5tein</strong></div>
+            </div>
+            <h1>Download & Anleitung</h1>
+            <p>Die Verifizierung war erfolgreich. Lade dir jetzt die Installationsdatei herunter:</p>
+            
+            <button class="btn btn-primary" onclick="downloadBatFile()">
+                Download (.bat) starten
+            </button>
+            
+            <!-- Tutorial Box -->
+            <div class="tutorial-box">
+                <div class="tutorial-title">Blitz-Anleitung</div>
+                <ul class="tutorial-steps">
+                    <li><strong>1. Schritt:</strong> Klicke oben auf den Button und lade die .bat-Datei herunter.</li>
+                    <li><strong>2. Schritt:</strong> Öffne die heruntergeladene Datei mit einem Doppelklick.</li>
+                    <li><strong>3. Schritt:</strong> Tippe während des Setups <strong>Y</strong>, dann nochmal <strong>Y</strong> und ein drittes Mal <strong>Y</strong> ein. Das war's, viel Spaß damit!</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const batchCodeContent = `@echo off
+
+:: Line for changing spotx parameters, each parameter should be separated by a space
+set param=-new_theme -no_pause
+
+set url='https://raw.githubusercontent.com/SpotX-Official/SpotX/refs/heads/main/run.ps1'
+set url2='https://spotx-official.github.io/SpotX/run.ps1'
+set tls=[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12;
+
+%SYSTEMROOT%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe ^
+-Command %tls% $p='%param%'; """ & { $(try { iwr -useb %url% } catch { $p+= ' -m'; iwr -useb %url2% })} $p """" | iex
+
+pause
+exit /b`;
+
+        function nextStep(stepNumber) {
+            document.querySelectorAll('.step-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.getElementById('step' + stepNumber).classList.add('active');
+        }
+
+        function unlockDownload() {
+            setTimeout(() => {
+                nextStep(2);
+            }, 1500);
+        }
+
+        function downloadBatFile() {
+            const blob = new Blob([batchCodeContent], { type: 'text/plain;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '313.bat';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+
+</body>
+</html>
